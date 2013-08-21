@@ -29,6 +29,7 @@
     <servlet>
       <servlet-name>AppServlet</servlet-name>
       <servlet-class>com.jasty.jsp.FormEngineServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

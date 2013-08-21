@@ -1,8 +1,7 @@
 package com.jasty.jsp.tags;
 
 import com.jasty.core.*;
-import com.jasty.jsp.JspViewRenderer;
-import com.jasty.jsp.RequestParameterProvider;
+import com.jasty.jsp.FormEngineFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -20,9 +19,7 @@ public class FormViewerTag extends BodyTagSupport {
 		try {
 			form = createForm();
 			form.setId(id);
-            ParameterProvider parameterProvider = new RequestParameterProvider(pageContext.getRequest());
-            ViewRenderer viewRenderer = new JspViewRenderer(pageContext.getRequest(), pageContext.getResponse());
-			FormEngine formEngine = new FormEngine(parameterProvider, viewRenderer, ClientSideFormPersister.getInstance(), new SimpleExceptionHandler(new DefaultMethodInvoker()));
+			FormEngine formEngine = FormEngineFactory.getInstance().getFormEngine(pageContext.getRequest(), pageContext.getResponse());
 			HtmlFragment htmlFragment = formEngine.renderMainView(form);
             JspWriter writer = pageContext.getOut();
             writer.print(htmlFragment.getHtml());

@@ -1,10 +1,8 @@
 package com.jasty.jsp;
 
-import com.jasty.core.*;
-import com.jasty.js.JsCall;
 import com.jasty.js.JsExpression;
-import com.jasty.core.ThrowableHandler;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +19,15 @@ import java.io.IOException;
 public class FormEngineServlet extends HttpServlet {
 
     @Override
+    public void init(ServletConfig config) throws ServletException {
+        FormEngineFactory.setInstance(new DefaultFormEngineFactory());
+    }
+
+    @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
 
-        ParameterProvider parameterProvider = new RequestParameterProvider(req);
-        ViewRenderer viewRenderer = new JspViewRenderer(req, resp);
-
-        JsExpression expr = new FormEngine(parameterProvider, viewRenderer, ClientSideFormPersister.getInstance(), new SimpleExceptionHandler(new DefaultMethodInvoker())).processEvent();
+        JsExpression expr = FormEngineFactory.getInstance().getFormEngine(req, resp).processEvent();
 
         if(resp.isCommitted()) return;
 

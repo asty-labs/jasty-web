@@ -19,7 +19,7 @@ public class FormEngineTest {
     public void testProcess() {
         TestParameterProvider parameterProvider = new TestParameterProvider();
         parameterProvider.put("eventHandler", "successfulEvent");
-        FormEngine formEngine = new FormEngine(parameterProvider, null, ClientSideFormPersister.getInstance(), new SimpleExceptionHandler(new DefaultMethodInvoker()));
+        FormEngine formEngine = new FormEngine(parameterProvider, null, new ClientSideFormPersister(), new SimpleExceptionHandler(new DefaultMethodInvoker()));
         MyForm form = new MyForm();
         form.setId("formId");
         parameterProvider.put("state", Base64.encodeBase64String(SerializationUtils.serializeObject(form)));
@@ -34,7 +34,7 @@ public class FormEngineTest {
     @Test
     public void testProcessWithError() {
         TestParameterProvider parameterProvider = new TestParameterProvider();
-        FormEngine formEngine = new FormEngine(parameterProvider, null, ClientSideFormPersister.getInstance(), new SimpleExceptionHandler(new DefaultMethodInvoker()));
+        FormEngine formEngine = new FormEngine(parameterProvider, null, new ClientSideFormPersister(), new SimpleExceptionHandler(new DefaultMethodInvoker()));
         parameterProvider.put("eventHandler", "erroneousEvent");
         Form form = new MyForm();
         form.setId("formId");
