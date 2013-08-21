@@ -1,4 +1,4 @@
-package com.jasty.components;
+package com.jasty.components.std;
 
 import com.jasty.core.Component;
 import com.jasty.core.InitProperty;
@@ -24,9 +24,9 @@ public class ComboBox extends Component {
     private Iterable<Option> options;
 
     @Override
-    public void restore(Map<String, String[]> data) {
+    public void restore(Map<String, Object> data) {
         if(data.containsKey(getId()))
-            value = data.get(getId())[0];
+            value = (String)data.get(getId());
     }
 
     @Override
@@ -44,6 +44,7 @@ public class ComboBox extends Component {
     }
 
     public void setOptions(Iterable<Option> options) {
+        this.options = options;
         invoke("options", options);
     }
 }

@@ -12,7 +12,9 @@ import java.util.Map;
 public interface ParameterProvider {
 
     String getParameter(String name);
-    
-    Map<String, String[]> getParameterMap();
+
+    Object getFile(String name);
+
+    Map<String, Object> getParameterMap();
     
 }

@@ -158,7 +158,7 @@ $.fn.ajaxSubmit = function(options) {
 
 	var fileAPI = !!(hasFileInputs && fileInputs.get(0).files && window.FormData);
 	log("fileAPI :" + fileAPI);
-	var shouldUseFrame = (hasFileInputs || multipart) && !fileAPI;
+	var shouldUseFrame = (hasFileInputs || multipart);
 
 	// options.iframe allows user to force iframe mode
 	// 06-NOV-09: now defaulting to iframe mode if file input is detected
@@ -326,7 +326,7 @@ $.fn.ajaxSubmit = function(options) {
 			return doc;
 		}
 		
-		// Rails CSRF hack (thanks to Yvan BARTHƒLEMY)
+		// Rails CSRF hack (thanks to Yvan BARTHï¿½LEMY)
 		var csrf_token = $('meta[name=csrf-token]').attr('content');
 		var csrf_param = $('meta[name=csrf-param]').attr('content');
 		if (csrf_param && csrf_token) {
@@ -484,14 +484,19 @@ $.fn.ajaxSubmit = function(options) {
 				var dt = (s.dataType || '').toLowerCase();
 				var scr = /(json|script|text)/.test(dt);
 				if (scr || s.textarea) {
-					// see if user embedded response in textarea
-					var ta = doc.getElementsByTagName('textarea')[0];
-					if (ta) {
-						xhr.responseText = ta.value;
-						// support for XHR 'status' & 'statusText' emulation :
-						xhr.status = Number( ta.getAttribute('status') ) || xhr.status;
-						xhr.statusText = ta.getAttribute('statusText') || xhr.statusText;
-					}
+                    var ta = doc.getElementsByTagName('textarea')[0];
+                    // see if user embedded response in textarea
+                    // STK: performance fix for firefox, when trying to render big javascript in textarea - use span containing comment instead
+                    var span = doc.getElementsByTagName('span')[0];
+                    if (ta) {
+                        xhr.responseText = ta.value;
+                        // support for XHR 'status' & 'statusText' emulation :
+                        xhr.status = Number( ta.getAttribute('status') ) || xhr.status;
+                        xhr.statusText = ta.getAttribute('statusText') || xhr.statusText;
+                    }
+                    else if(span) {
+                        xhr.responseText = span.childNodes[0].nodeValue;
+                    }
 					else if (scr) {
 						// account for browsers injecting pre around json response
 						var pre = doc.getElementsByTagName('pre')[0];

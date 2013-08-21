@@ -1,8 +1,11 @@
 package com.jasty.jsp;
 
 import com.jasty.core.ParameterProvider;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.servlet.ServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,7 +29,18 @@ public class RequestParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, String[]> getParameterMap() {
-        return req.getParameterMap();
+    public Object getFile(String name) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public Map<String, Object> getParameterMap() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Enumeration e = req.getParameterNames();
+        while(e.hasMoreElements()) {
+            String key = (String)e.nextElement();
+            result.put(key, req.getParameter(key));
+        }
+        return result;
     }
 }

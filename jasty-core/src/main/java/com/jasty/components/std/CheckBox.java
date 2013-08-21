@@ -1,4 +1,4 @@
-package com.jasty.components;
+package com.jasty.components.std;
 
 import com.jasty.core.Component;
 import com.jasty.core.InitProperty;
@@ -22,8 +22,8 @@ public class CheckBox extends Component {
     private String onChange;
 
     @Override
-    public void restore(Map<String, String[]> data) {
-        checked = data.containsKey(getId()) && "1".equals(data.get(getId())[0]);
+    public void restore(Map<String, Object> data) {
+        checked = data.containsKey(getId()) && "1".equals(data.get(getId()));
     }
 
     @Override

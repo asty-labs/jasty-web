@@ -1,7 +1,7 @@
 package guessnumber;
 
 import com.jasty.components.JQuery;
-import com.jasty.components.TextBox;
+import com.jasty.components.std.TextBox;
 import com.jasty.core.EventArgs;
 import com.jasty.core.Form;
 
@@ -22,14 +22,14 @@ public class MainForm extends Form {
     }
 
     public void processGuess(EventArgs e) {
-        JQuery stats = get(JQuery.class, "stats");
-        TextBox guessEntryField = get(TextBox.class, "guessEntryField");
+        JQuery stats = $$(JQuery.class, "stats");
+        TextBox guessEntryField = $$(TextBox.class, "guessEntryField");
 
         int guess;
         try {
             guess = Integer.parseInt(guessEntryField.getValue());
         } catch (NumberFormatException ex) {
-            JQuery statusLabel = query(JQuery.class, "#stats .status");
+            JQuery statusLabel = $(JQuery.class, "#stats .status");
             statusLabel.text("Your guess was not valid.");
             return;
         }

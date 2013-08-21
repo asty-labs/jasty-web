@@ -1,5 +1,6 @@
 package com.jasty.components;
 
+import com.jasty.components.std.Button;
 import com.jasty.js.JsContext;
 import org.junit.Test;
 

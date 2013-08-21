@@ -21,14 +21,16 @@ public class JsCall implements JsExpression {
 		StringBuilder builder = new StringBuilder(method);
 		builder.append("(");
 		boolean argumentProcessed = false;
-		for(Object param : args) {
-			if(argumentProcessed)
-				builder.append(", ");
-			else
-				argumentProcessed = true;
-			JsExpression expr = JsExpressionFactory.create(param);
-			builder.append(expr.encode());
-		}
+        if(args != null) {
+            for(Object param : args) {
+                if(argumentProcessed)
+                    builder.append(", ");
+                else
+                    argumentProcessed = true;
+                JsExpression expr = JsExpressionFactory.create(param);
+                builder.append(expr.encode());
+            }
+        }
 		builder.append(")");
 		return builder.toString();
 	}

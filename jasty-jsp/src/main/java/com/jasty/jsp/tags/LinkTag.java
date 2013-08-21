@@ -1,6 +1,6 @@
 package com.jasty.jsp.tags;
 
-import com.jasty.components.Link;
+import com.jasty.components.std.Link;
 import com.jasty.jsp.ComponentTag;
 
 public class LinkTag extends ComponentTag<Link> {

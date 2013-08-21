@@ -1,6 +1,6 @@
 package com.jasty.jsp.tags;
 
-import com.jasty.components.Button;
+import com.jasty.components.std.Button;
 import com.jasty.jsp.ComponentTag;
 
 public class ButtonTag extends ComponentTag<Button>{

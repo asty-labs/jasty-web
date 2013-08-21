@@ -27,16 +27,7 @@ public class FormEngineServlet extends HttpServlet {
         ParameterProvider parameterProvider = new RequestParameterProvider(req);
         ViewRenderer viewRenderer = new JspViewRenderer(req, resp);
 
-        JsExpression expr = new FormEngine(parameterProvider, viewRenderer, ClientSideFormPersister.getInstance()).processEvent(
-                new ThrowableHandler() {
-
-                    @Override
-                    public JsExpression handle(Throwable t) {
-                        t.printStackTrace();
-                        return new JsCall("alert", t.getMessage());
-                    }
-
-                });
+        JsExpression expr = new FormEngine(parameterProvider, viewRenderer, ClientSideFormPersister.getInstance(), new SimpleExceptionHandler(new DefaultMethodInvoker())).processEvent();
 
         if(resp.isCommitted()) return;
 

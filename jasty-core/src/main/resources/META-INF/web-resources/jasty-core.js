@@ -27,7 +27,22 @@ var jasty = {
             htmlClosure(obj.html);
             obj.script();
         }
-	}
+	},
+
+    replace: function(self, contentClosure) {
+        var prev = self.prev()
+        if(prev.length > 0) {
+            prev.after(contentClosure());
+            return
+        }
+        var next = self.next()
+        if(next.length > 0) {
+            next.before(contentClosure());
+            return
+        }
+        var parent = self.parent()
+        parent.append(contentClosure())
+    }
 };
 
 jasty.settings = {};
@@ -61,14 +76,19 @@ jasty.Control = {
     init: function(self, opts) {
         if(!opts.visible)
             self.hide();
+        if(opts.clazz)
+            self.addClass(opts.clazz);
+        if(opts.title)
+            self.attr("title", opts.title);
+
     },
 
-	addClass: function(self, value) {
-		self.addClass(value);
+	addClass: function(self, value, duration) {
+		self.addClass(value, duration);
 	},
 
-	removeClass: function(self, value) {
-		self.removeClass(value);
+	removeClass: function(self, value, duration) {
+		self.removeClass(value, duration);
 	},
 
 	remove: function(self) {
@@ -78,15 +98,6 @@ jasty.Control = {
 	visible: function(self, value) {
 	    if(value) self.show();
 	    else self.hide();
-	}
-}
-
-jasty.Form = jasty.extend(jasty.Control, {
-	init: function(self, opts) {
-	},
-
-	update: function(self, state) {
-		self.data("state", state);
 	},
 
     replaceWith: function(self, content) {
@@ -111,7 +122,16 @@ jasty.Form = jasty.extend(jasty.Control, {
         jasty.render(content, function(html) {
             parent.append(html);
         });
-    },
+    }
+}
+
+jasty.Form = jasty.extend(jasty.Control, {
+	init: function(self, opts) {
+	},
+
+	update: function(self, state) {
+		self.data("state", state);
+	},
 
 	raiseEvent: function(self, eventHandler, eventArgs, opts) {
 		opts = opts || {};
@@ -121,6 +141,10 @@ jasty.Form = jasty.extend(jasty.Control, {
 			    data["EVT." + key] = value;
 		    });
 		}
+        $(".jasty-blocker").addClass("enabled").css("cursor", 'wait').delay(800).queue(function() {
+            $(this).addClass("visible");
+        });
+
         data["state"] = self.data("state");
 		var props = {
 		    url: jasty.settings.formEngineUrl,
@@ -130,13 +154,43 @@ jasty.Form = jasty.extend(jasty.Control, {
 		    success: function(data) {
 		        if (opts && opts.success)
 		            opts.success();
-		    },
+                $(".jasty-blocker").stop(true).removeClass("enabled").removeClass("visible").css("cursor", 'auto');
+            },
 		    error: function(xhr, status, e) {
                 if(opts && opts.error) {
                     opts.error(xhr, status, e);
                 }
-		    }
+                $(".jasty-blocker").stop(true).removeClass("enabled").removeClass("visible").css("cursor", 'auto');
+            }
 		};
         self.ajaxSubmit(props);
-	}
+	},
+
+    errors: function(self, errorMessage) {
+        alert(errorMessage);
+    }
 });
+
+jasty.JQuery = jasty.extend(jasty.Control, {
+    text: function(self, value) {
+        self.text(value);
+    },
+
+    html: function(self, value) {
+        jasty.render(value, function(html) {
+            self.empty();
+            self.append(html);
+        });
+    },
+
+    append: function(self, content) {
+        jasty.render(content, function(html) {
+            self.append(html);
+        })
+    },
+
+    empty: function(self) {
+        self.empty();
+    }
+});
+

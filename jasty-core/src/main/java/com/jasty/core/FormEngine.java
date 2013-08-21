@@ -4,8 +4,6 @@ import com.jasty.js.JsClosure;
 import com.jasty.js.JsContext;
 import com.jasty.js.JsExpression;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -21,13 +19,17 @@ public class FormEngine {
     private final ParameterProvider parameterProvider;
     private final ViewRenderer viewRenderer;
     private FormPersister formPersister;
+    private MethodInvoker methodInvoker;
 
     public FormEngine(ParameterProvider parameterProvider,
-                      ViewRenderer viewRenderer, FormPersister formPersister) {
+                      ViewRenderer viewRenderer,
+                      FormPersister formPersister,
+                      MethodInvoker methodInvoker) {
 
         this.parameterProvider = parameterProvider;
         this.viewRenderer = viewRenderer;
         this.formPersister = formPersister;
+        this.methodInvoker = methodInvoker;
     }
 
     /**
@@ -52,7 +54,11 @@ public class FormEngine {
         return parameterProvider.getParameter(key);
     }
 
-    protected Map<String, String[]> getParameterMap() {
+    protected Object getFile(String key) {
+        return parameterProvider.getFile(key);
+    }
+
+    protected Map<String, Object> getParameterMap() {
         return parameterProvider.getParameterMap();
     }
 
@@ -126,41 +132,21 @@ public class FormEngine {
      * This method dispatches event to the handler method of the appropriate Form. Dispatching
      * data are obtained from the parameter provider.
      *
-     * @param errorHandler  delegate to handle unprocessed exceptions
      * @return              JsExpression to be sent as the response
      */
-    public JsExpression processEvent(ThrowableHandler errorHandler) {
-        try {
-            return JsContext.execute(new Runnable() {
-                @Override
-                public void run() {
-                    processEvent();
-                }
-            });
-        }
-        catch(FormEngineException e) {
-            return errorHandler.handle(e.getCause());
-        }
-        catch(Throwable t) {
-            return errorHandler.handle(t);
-        }
+    public JsExpression processEvent() {
+        return JsContext.execute(new Runnable() {
+            @Override
+            public void run() {
+                executeMethod();
+            }
+        });
     }
 
-    private void processEvent() {
-        Form form = formPersister.lookup(getParameter("state"));
+    private void executeMethod() {
+        final Form form = formPersister.lookup(getParameter("state"));
         form.setFormEngine(this);
-        String eventHandler = getParameter("eventHandler");
-        EventArgs args = extractEventArgs(parameterProvider.getParameterMap(), form);
-        try {
-            Method method = form.getClass().getMethod(eventHandler, EventArgs.class);
-            method.invoke(form, args);
-        }
-        catch(InvocationTargetException e) {
-            throw new FormEngineException(e.getTargetException());
-        }
-        catch(Exception e) {
-            throw new RuntimeException(e);
-        }
+        methodInvoker.invoke(form, parameterProvider);
         updateForm(form);
     }
 
@@ -168,32 +154,7 @@ public class FormEngine {
         form.update(formPersister.persist(form));
     }
 
-    private static final String EVENT_PREFIX = "EVT.";
-
-    /**
-     * Fills EventArgs object from the request parameters
-     *
-     * @param map       request parameters
-     * @param form      form, owning the event
-     * @return          filled out EventArgs-object
-     */
-    private static EventArgs extractEventArgs(Map<String, String[]> map, Form form) {
-
-        EventArgs args = new EventArgs();
-        for(String key : map.keySet()) {
-            if(key.startsWith(EVENT_PREFIX)) {
-                String value = map.get(key)[0];
-                key = key.substring(EVENT_PREFIX.length());
-                if("srcId".equals(key))
-                    args.setSrcId(value.substring(form.getId().length() + 1));
-                else
-                    args.put(key, value);
-            }
-        }
-        return args;
-    }
-
-    private static class FormEngineException extends RuntimeException {
+    public static class FormEngineException extends RuntimeException {
 
         public FormEngineException(Throwable t) {
             super(t);

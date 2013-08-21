@@ -1,7 +1,7 @@
 package com.jasty.jsp.tags;
 
-import com.jasty.components.ComboBox;
-import com.jasty.components.Option;
+import com.jasty.components.std.ComboBox;
+import com.jasty.components.std.Option;
 import com.jasty.jsp.ComponentTag;
 
 public class ComboBoxTag extends ComponentTag<ComboBox> {

@@ -22,7 +22,7 @@ public class FormViewerTag extends BodyTagSupport {
 			form.setId(id);
             ParameterProvider parameterProvider = new RequestParameterProvider(pageContext.getRequest());
             ViewRenderer viewRenderer = new JspViewRenderer(pageContext.getRequest(), pageContext.getResponse());
-			FormEngine formEngine = new FormEngine(parameterProvider, viewRenderer, ClientSideFormPersister.getInstance());
+			FormEngine formEngine = new FormEngine(parameterProvider, viewRenderer, ClientSideFormPersister.getInstance(), new SimpleExceptionHandler(new DefaultMethodInvoker()));
 			HtmlFragment htmlFragment = formEngine.renderMainView(form);
             JspWriter writer = pageContext.getOut();
             writer.print(htmlFragment.getHtml());

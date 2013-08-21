@@ -26,10 +26,24 @@ public abstract class Component extends ComponentProxy implements JsSerializable
     private String data;
 
     @InitProperty
+    private String clazz;
+
+    @InitProperty
+    private String title;
+
+    @InitProperty
     private boolean visible = true;
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getHtmlTag() {
@@ -39,6 +53,8 @@ public abstract class Component extends ComponentProxy implements JsSerializable
     public final Map<String, String> getHtmlAttributes() {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("id", getClientId());
+        if(clazz != null)
+            attributes.put("class", clazz);
         fillHtmlAttributes(attributes);
         return attributes;
     }

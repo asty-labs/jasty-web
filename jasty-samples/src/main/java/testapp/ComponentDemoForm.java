@@ -1,9 +1,9 @@
 package testapp;
 
-import com.jasty.components.CheckBox;
-import com.jasty.components.ComboBox;
-import com.jasty.components.Option;
-import com.jasty.components.TextBox;
+import com.jasty.components.std.CheckBox;
+import com.jasty.components.std.ComboBox;
+import com.jasty.components.std.Option;
+import com.jasty.components.std.TextBox;
 import com.jasty.core.EventArgs;
 import com.jasty.core.Form;
 import com.jasty.core.FormFactory;
@@ -36,8 +36,8 @@ public class ComponentDemoForm extends Form implements FormFactory {
     }
 
     public void mainComboChanged(EventArgs e) {
-        ComboBox mainCombo = get(ComboBox.class, e.getSrcId());
-        ComboBox detailCombo = get(ComboBox.class, "detailCombo");
+        ComboBox mainCombo = $(ComboBox.class, e.getSrcId());
+        ComboBox detailCombo = $(ComboBox.class, "detailCombo");
         List<Option> opts = new ArrayList<Option>();
         if("set1".equals(mainCombo.getValue())) {
             opts.add(new Option("", "not selected"));
@@ -56,9 +56,9 @@ public class ComponentDemoForm extends Form implements FormFactory {
     }
     
     public void switcherChanged(EventArgs e) {
-        CheckBox switcher = get(CheckBox.class, e.getSrcId());
+        CheckBox switcher = $(CheckBox.class, e.getSrcId());
         String newText = switcher.isChecked() ? "checked" : "unchecked";
-        get(TextBox.class, "text").setValue(newText);
+        $(TextBox.class, "text").setValue(newText);
     }
 
     public void resetClicked(EventArgs e) {

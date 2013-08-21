@@ -1,5 +1,7 @@
 package com.jasty.core;
 
+import java.util.Map;
+
 /**
  * This is the base class for all Forms. Forms are stateful presenters/controllers with event handler
  * methods, where FormEngine dispatches requests to.
@@ -11,19 +13,19 @@ package com.jasty.core;
  * @version 1.0
  *
  */
-public class Form extends Component {
+public abstract class Form extends Component {
 
     /**
      * When a component gets registered in Form and has no id, Form assigns it a generated one.
      * For subsequent requests the last used id should be tracked, to avoid name clashes.
      *
      */
-	private int lastAssignedChildId;
+    private int lastAssignedChildId;
 
     /**
      * FormEngine is injected on every request
      */
-	private transient FormEngine formEngine;
+    protected transient FormEngine formEngine;
 
     /**
      * This flag is set, if the form is disposed (e.g. replaced by another one) and doesn't
@@ -55,15 +57,19 @@ public class Form extends Component {
      * @param initialId to be adjusted
      * @return unique id
      */
-	private String globalizeId(String initialId) {
-		if(initialId == null)
-			initialId = "c" + lastAssignedChildId++;
-		return getClientId() + "." + initialId;
-	}
-	
-	public void setFormEngine(FormEngine value) {
-		formEngine = value;
-	}
+    private String globalizeId(String initialId) {
+        if(initialId == null)
+            initialId = "c" + lastAssignedChildId++;
+        return getClientId() + "." + initialId;
+    }
+
+    public String generateClientId(String id) {
+        return globalizeId(id).replace(".", "_");
+    }
+
+    public void setFormEngine(FormEngine value) {
+        formEngine = value;
+    }
 
     /**
      * This method creates component proxy for the given type and id. The id is automatically
@@ -75,18 +81,18 @@ public class Form extends Component {
      * @param <T>   component type
      * @return      instance of the component proxy, with restored state
      */
-	protected <T extends ComponentProxy> T get(Class<T> type, String id) {
-		try {
-			T obj = type.newInstance();
-			obj.setId(globalizeId(id));
-			obj.restore(formEngine.getParameterMap());
-			return obj;
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    protected <T extends ComponentProxy> T $$(Class<T> type, String id) {
+        try {
+            T obj = type.newInstance();
+            obj.setId(globalizeId(id));
+            obj.restore(formEngine.getParameterMap());
+            return obj;
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * This method creates component proxy for the given type and selector. The ids
@@ -97,17 +103,17 @@ public class Form extends Component {
      * @param <T>   component type
      * @return      instance of the component proxy, with restored state
      */
-	protected <T extends ComponentProxy> T query(Class<T> type, String query) {
-		try {
-			T obj = type.newInstance();
-			obj.setQuery(query.replace("#", "#" + getClientId() + "_"));
-			return obj;
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    protected <T extends ComponentProxy> T $(Class<T> type, String query) {
+        try {
+            T obj = type.newInstance();
+            obj.setQuery(query.replace("#", "#" + getClientId() + "_"));
+            return obj;
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * This method can be used in the event handlers of the Form to get request parameters.
@@ -116,9 +122,17 @@ public class Form extends Component {
      * @return      value of the parameter
      *
      */
-	protected String getParameter(String name) {
-		return formEngine.getParameter(globalizeId(name));
-	}
+    protected String getParameter(String name) {
+        return formEngine.getParameter(globalizeId(name));
+    }
+
+    protected Object getFile(String name) {
+        return formEngine.getFile(globalizeId(name));
+    }
+
+    protected Map<String, Object> getParameters() {
+        return formEngine.getParameterMap();
+    }
 
     /**
      * This method can be used in the event handlers of the Form for rendering view fragments.
@@ -128,9 +142,20 @@ public class Form extends Component {
      * @return              HtmlFragment with rendered fragment
      *
      */
-	protected HtmlFragment renderFragment(String fragmentName, Object model) {
-		return formEngine.renderFragment(this, fragmentName, model);
-	}
+    protected HtmlFragment renderFragment(String fragmentName, Object model) {
+        return formEngine.renderFragment(this, fragmentName, model);
+    }
+
+    protected HtmlFragment renderMainView(Form form, String suffix) {
+        form.setId(getId() + "." + suffix);
+        return formEngine.renderMainView(form);
+    }
+
+    @Override
+    protected void fillHtmlAttributes(Map<String, String> attributes) {
+        super.fillHtmlAttributes(attributes);
+        attributes.put("method", "post");
+    }
 
     /**
      * Renders the specified Form and replaces with it the current one
@@ -149,9 +174,9 @@ public class Form extends Component {
      * @return  model object for the main view
      *
      */
-	protected Object prepareModel() {
-		return null;
-	}
+    protected Object prepareModel() {
+        return null;
+    }
 
     /**
      * This method is called after all components of the Form's main view are initialized. Typically,
@@ -159,8 +184,8 @@ public class Form extends Component {
      * initialization of the main view is done.
      *
      */
-	protected void afterInit() {
-	}
+    protected void afterInit() {
+    }
 
     /**
      * The javascript component is fixed to "Form", because we are not going to have
@@ -168,10 +193,10 @@ public class Form extends Component {
      *
      * @return  javascript component name
      */
-	@Override
-	protected String getClassName() {
-		return "Form";
-	}
+    @Override
+    protected String getClassName() {
+        return "Form";
+    }
 
     /**
      * Sends Form's state to the client
@@ -179,8 +204,12 @@ public class Form extends Component {
      * @param state state representation for the client
      *
      */
-	protected void update(String state) {
+    protected void update(String state) {
         if(disposed) return;
-		invoke("update", state);
-	}
+        invoke("update", state);
+    }
+
+    protected void setDisposed(boolean value) {
+        disposed = value;
+    }
 }

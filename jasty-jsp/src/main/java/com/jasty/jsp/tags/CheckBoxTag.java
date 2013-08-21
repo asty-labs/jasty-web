@@ -1,6 +1,6 @@
 package com.jasty.jsp.tags;
 
-import com.jasty.components.CheckBox;
+import com.jasty.components.std.CheckBox;
 import com.jasty.jsp.ComponentTag;
 
 public class CheckBoxTag extends ComponentTag<CheckBox> {

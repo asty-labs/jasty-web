@@ -1,18 +1,16 @@
-package com.jasty.components;
+package com.jasty.components.std;
 
 import com.jasty.core.Component;
 import com.jasty.core.InitProperty;
 
-import java.util.Map;
-
 /**
- * Component proxy for HTML Button
+ * Component proxy for HTML link (anchor)
  *
  * @author Stanislav Tkachev
  * @version 1.0
  *
  */
-public class Button extends Component {
+public class Link extends Component {
 	
 	@SuppressWarnings("unused")
     @InitProperty
@@ -25,14 +23,13 @@ public class Button extends Component {
 		this.text = text;
 		invoke("text", text);
 	}
-
-    @Override
-    public String getHtmlTag() {
-        return "input";
+    
+    public void setOnClick(String value) {
+        onClick = value;
     }
 
     @Override
-    protected void fillHtmlAttributes(Map<String, String> attributes) {
-        attributes.put("type", "button");
+    public String getHtmlTag() {
+        return "a";
     }
 }

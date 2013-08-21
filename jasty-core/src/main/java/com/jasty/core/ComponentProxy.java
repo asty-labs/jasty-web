@@ -85,12 +85,24 @@ public abstract class ComponentProxy implements Serializable {
         invoke("addClass", value);
     }
 
+    public void addClass(String value, int duration) {
+        invoke("addClass", value, duration);
+    }
+
     public void removeClass(String value) {
         invoke("removeClass", value);
     }
 
+    public void removeClass(String value, int duration) {
+        invoke("removeClass", value, duration);
+    }
+
     public void remove() {
         invoke("remove");
+    }
+
+    public void replaceWith(HtmlFragment fragment) {
+        invoke("replaceWith", fragment);
     }
 
     /**
@@ -99,7 +111,7 @@ public abstract class ComponentProxy implements Serializable {
      *
      * @param data all available data to restore component state from
      */
-    public void restore(Map<String, String[]> data) {
+    public void restore(Map<String, Object> data) {
 
     }
 }

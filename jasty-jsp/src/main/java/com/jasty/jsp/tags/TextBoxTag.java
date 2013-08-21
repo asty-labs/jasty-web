@@ -1,6 +1,6 @@
 package com.jasty.jsp.tags;
 
-import com.jasty.components.TextBox;
+import com.jasty.components.std.TextBox;
 import com.jasty.jsp.ComponentTag;
 
 public class TextBoxTag extends ComponentTag<TextBox> {
