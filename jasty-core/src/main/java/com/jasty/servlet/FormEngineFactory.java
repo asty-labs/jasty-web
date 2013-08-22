@@ -1,4 +1,4 @@
-package com.jasty.jsp;
+package com.jasty.servlet;
 
 import com.jasty.core.*;
 

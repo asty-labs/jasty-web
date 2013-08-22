@@ -1,7 +1,7 @@
 package com.jasty.jsp.tags;
 
 import com.jasty.core.*;
-import com.jasty.jsp.FormEngineFactory;
+import com.jasty.servlet.FormEngineFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
