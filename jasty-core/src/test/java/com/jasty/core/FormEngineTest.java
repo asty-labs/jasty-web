@@ -4,7 +4,6 @@ import com.jasty.js.JsExpression;
 import com.jasty.utils.SerializationUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,8 +59,8 @@ public class FormEngineTest {
         }
 
         @Override
-        public Object getFile(String name) {
-            throw new NotImplementedException();
+        public UploadedFile getFile(String name) {
+            throw new UnsupportedOperationException();
         }
 
         @Override

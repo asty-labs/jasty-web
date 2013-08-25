@@ -54,7 +54,7 @@ public class FormEngine {
         return parameterProvider.getParameter(key);
     }
 
-    protected Object getFile(String key) {
+    protected UploadedFile getFile(String key) {
         return parameterProvider.getFile(key);
     }
 

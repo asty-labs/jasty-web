@@ -126,7 +126,7 @@ public abstract class Form extends Component {
         return formEngine.getParameter(globalizeId(name));
     }
 
-    protected Object getFile(String name) {
+    protected UploadedFile getFile(String name) {
         return formEngine.getFile(globalizeId(name));
     }
 

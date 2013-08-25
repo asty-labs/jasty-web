@@ -1,7 +1,7 @@
 package com.jasty.servlet;
 
 import com.jasty.core.ParameterProvider;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.jasty.core.UploadedFile;
 
 import javax.servlet.ServletRequest;
 import java.util.Enumeration;
@@ -29,8 +29,8 @@ public class RequestParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Object getFile(String name) {
-        throw new NotImplementedException();
+    public UploadedFile getFile(String name) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface ParameterProvider {
 
     String getParameter(String name);
 
-    Object getFile(String name);
+    UploadedFile getFile(String name);
 
     Map<String, Object> getParameterMap();
     

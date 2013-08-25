@@ -31,6 +31,10 @@ public abstract class FormEngineServlet extends HttpServlet {
             throws ServletException, IOException {
 
         JsExpression expr = FormEngineFactory.getInstance().getFormEngine(req, resp).processEvent();
+        writeScript(expr, req, resp);
+    }
+
+    public static void writeScript(JsExpression expr, HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         if(resp.isCommitted()) return;
 
