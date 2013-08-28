@@ -8,11 +8,7 @@ public class JsContextTest {
 
 	@Test
 	public void testErrorNoContext() {
-		try {
-			JsContext.add(new JsCall("init"));
-			fail();
-		}
-		catch(IllegalStateException e) {}
+        JsContext.add(new JsCall("init"));
 	}
 	
 	@Test

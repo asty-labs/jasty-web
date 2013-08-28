@@ -55,6 +55,23 @@
 
     <tag>
         <description></description>
+        <name>fileUpload</name>
+        <tag-class>com.jasty.jsp.tags.FileUploadTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>visible</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description></description>
         <name>comboBox</name>
         <tag-class>com.jasty.jsp.tags.ComboBoxTag</tag-class>
         <body-content>scriptless</body-content>

@@ -1,5 +1,7 @@
 package com.jasty.core;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -57,7 +59,7 @@ public abstract class Form extends Component {
      * @param initialId to be adjusted
      * @return unique id
      */
-    private String globalizeId(String initialId) {
+    public String globalizeId(String initialId) {
         if(initialId == null)
             initialId = "c" + lastAssignedChildId++;
         return getClientId() + "." + initialId;
@@ -81,11 +83,11 @@ public abstract class Form extends Component {
      * @param <T>   component type
      * @return      instance of the component proxy, with restored state
      */
-    protected <T extends ComponentProxy> T $$(Class<T> type, String id) {
+    public <T extends ComponentProxy> T $$(Class<T> type, String id) {
         try {
             T obj = type.newInstance();
             obj.setId(globalizeId(id));
-            obj.restore(formEngine.getParameterMap());
+            obj.restore(formEngine.getParameterProvider());
             return obj;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
@@ -122,16 +124,37 @@ public abstract class Form extends Component {
      * @return      value of the parameter
      *
      */
-    protected String getParameter(String name) {
-        return formEngine.getParameter(globalizeId(name));
+    protected ParameterProvider getParameters() {
+        return new GlobalizedParameterProvider();
     }
 
-    protected UploadedFile getFile(String name) {
-        return formEngine.getFile(globalizeId(name));
-    }
+    class GlobalizedParameterProvider implements ParameterProvider {
 
-    protected Map<String, Object> getParameters() {
-        return formEngine.getParameterMap();
+        @Override
+        public String getParameter(String name) {
+            return formEngine.getParameterProvider().getParameter(globalizeId(name));
+        }
+
+        @Override
+        public UploadedFile getFile(String name) {
+            return formEngine.getParameterProvider().getFile(globalizeId(name));
+        }
+
+        @Override
+        public Collection<String> getParameterNames() {
+
+            String prefix = getClientId() + ".";
+            Collection<String> result = new ArrayList<String>();
+            for(String name : formEngine.getParameterProvider().getParameterNames()) {
+                if(name.startsWith(prefix)) result.add(name.substring(prefix.length()));
+            }
+            return result;
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            return formEngine.getParameterProvider().getParameterValues(globalizeId(name));
+        }
     }
 
     /**

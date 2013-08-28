@@ -31,7 +31,7 @@ public class ListForm extends Form {
     
     public void searchClicked(EventArgs e) {
         $(JQuery.class, ".list").empty();
-        String text = getParameter("searchText");
+        String text = getParameters().getParameter("searchText");
         for(String item : items) {
             if(item.contains(text))
                 displayItem(item);

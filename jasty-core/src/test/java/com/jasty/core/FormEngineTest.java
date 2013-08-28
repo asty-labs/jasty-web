@@ -5,6 +5,7 @@ import com.jasty.utils.SerializationUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,8 +65,13 @@ public class FormEngineTest {
         }
 
         @Override
-        public Map<String, Object> getParameterMap() {
-            return parameters;
+        public Collection<String> getParameterNames() {
+            return parameters.keySet();
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            return new String[0];
         }
     }
 }
