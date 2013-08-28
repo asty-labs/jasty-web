@@ -125,10 +125,10 @@ public abstract class Form extends Component {
      *
      */
     protected ParameterProvider getParameters() {
-        return new GlobalizedParameterProvider();
+        return new FormLocalParameterProvider();
     }
 
-    class GlobalizedParameterProvider implements ParameterProvider {
+    class FormLocalParameterProvider implements ParameterProvider {
 
         @Override
         public String getParameter(String name) {
