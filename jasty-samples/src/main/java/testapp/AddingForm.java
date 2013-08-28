@@ -18,7 +18,7 @@ public class AddingForm extends Form {
     }
 
     public void okClicked(EventArgs e) {
-        parent.addItem(getParameter("text"));
+        parent.addItem(getParameters().getParameter("text"));
         replaceWith(parent);
     }
 
